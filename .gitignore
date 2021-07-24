@@ -329,3 +329,5 @@ ASALocalRun/
 PathTracer/Data/Untitled\.fbx
 
 PathTracer/imgui\.ini
+
+build/

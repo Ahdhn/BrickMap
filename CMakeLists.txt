@@ -18,11 +18,20 @@ project(Brickmap LANGUAGES CUDA CXX)
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable -Wno-unused-parameter")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-parentheses")
 
-find_package(glad CONFIG REQUIRED)
-find_package(glfw3 CONFIG REQUIRED)
-find_package(glm CONFIG REQUIRED)
-find_package(soil2 CONFIG REQUIRED)
-find_package(imgui CONFIG REQUIRED)
+add_subdirectory(external/)
+add_definitions(-DGLFW_INCLUDE_NONE)
+
+#find_package(glad CONFIG REQUIRED)
+#find_package(glfw3 CONFIG REQUIRED)
+#find_package(glm CONFIG REQUIRED)
+#find_package(soil2 CONFIG REQUIRED)
+#find_package(imgui CONFIG REQUIRED)
+
+# Enable IDE folder support
+set_property(GLOBAL PROPERTY USE_FOLDERS ON) 	
+
+# Direct all output to /bin directory
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
 set(CMAKE_CUDA_ARCHITECTURES 61)
 
@@ -57,11 +66,11 @@ add_executable(Brickmap
 )
 
 target_link_libraries(Brickmap PRIVATE
-	glad::glad
+	glad
 	glfw
 	glm
-	soil2
-	imgui::imgui
+	#soil2
+	imgui
 )
 
 target_include_directories(Brickmap PRIVATE 
@@ -75,4 +84,4 @@ target_compile_options(Brickmap PRIVATE
 	$<$<COMPILE_LANGUAGE:CXX>:/arch:AVX2>
 )
 
-target_compile_features(Brickmap PUBLIC cxx_std_20)
+target_compile_features(Brickmap PUBLIC cxx_std_17)
