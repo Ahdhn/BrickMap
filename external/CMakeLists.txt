@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.0)
 ###### imgui
 project(imgui)
 
-set(imgui_SOURCES imgui/imgui.cpp imgui/imgui_draw.cpp imgui/imgui_widgets.cpp imgui/backends/imgui_impl_glfw.cpp imgui/backends/imgui_impl_opengl3.cpp imgui/misc/cpp/imgui_stdlib.cpp)
+set(imgui_SOURCES imgui/imgui.cpp imgui/imgui_tables.cpp imgui/imgui_draw.cpp imgui/imgui_widgets.cpp imgui/backends/imgui_impl_glfw.cpp imgui/backends/imgui_impl_opengl3.cpp imgui/misc/cpp/imgui_stdlib.cpp)
 
 add_compile_definitions(IMGUI_IMPL_OPENGL_LOADER_GLAD)
 

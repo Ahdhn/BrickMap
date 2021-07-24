@@ -8,6 +8,10 @@ endif ()
 cmake_minimum_required(VERSION 3.18)
 project(Brickmap LANGUAGES CUDA CXX)
 
+if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.18)
+  cmake_policy(SET CMP0104 OLD)
+endif()
+
 # set(CMAKE_CXX_STANDARD 17)
 # set(CMAKE_CUDA_STANDARD 14)
 # set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wconversion -Wundef")
@@ -33,14 +37,14 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Direct all output to /bin directory
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
-set(CMAKE_CUDA_ARCHITECTURES 61)
+
+# Auto-detect GPU architecture, sets ${CUDA_ARCHS}
+include("cmake/AutoDetectCudaArch.cmake")
+#set(CMAKE_CUDA_ARCHITECTURES 61)
 
 add_executable(Brickmap
 	"src/assert_cuda.cpp"
-	"src/camera.cpp"
-	"src/imgui.ini"
-	"src/imgui_impl_glfw.cpp"
-	"src/imgui_impl_opengl3.cpp"
+	"src/camera.cpp"	
 	"src/interop.cpp"
 	"src/kernel.cu"
 	"src/main.cpp"
@@ -53,16 +57,26 @@ add_executable(Brickmap
 	"src/variables.cpp"
 	"src/voxel.cu"
 	"src/voxel.cuh"
+	
+	"src/assert_cuda.h"
+	"src/camera.h"
+	"src/cuda_definitions.h"	
+	"src/interop.h"
+	"src/performance_measure.h"
+	"src/Scene.h"
+	"src/SimplexNoise.h"
+	"src/stdafx.h"
+	"src/variables.h"
 
-	"src/FastNoiseSIMD/FastNoiseSIMD.cpp"
-	"src/FastNoiseSIMD/FastNoiseSIMD.h"
-	"src/FastNoiseSIMD/FastNoiseSIMD_avx2.cpp"
-	"src/FastNoiseSIMD/FastNoiseSIMD_avx512.cpp"
-	"src/FastNoiseSIMD/FastNoiseSIMD_internal.cpp"
-	"src/FastNoiseSIMD/FastNoiseSIMD_internal.h"
-	"src/FastNoiseSIMD/FastNoiseSIMD_neon.cpp"
-	"src/FastNoiseSIMD/FastNoiseSIMD_sse2.cpp"
-	"src/FastNoiseSIMD/FastNoiseSIMD_sse41.cpp"
+	#"src/FastNoiseSIMD/FastNoiseSIMD.cpp"
+	#"src/FastNoiseSIMD/FastNoiseSIMD.h"
+	#"src/FastNoiseSIMD/FastNoiseSIMD_avx2.cpp"
+	#"src/FastNoiseSIMD/FastNoiseSIMD_avx512.cpp"
+	#"src/FastNoiseSIMD/FastNoiseSIMD_internal.cpp"
+	#"src/FastNoiseSIMD/FastNoiseSIMD_internal.h"
+	#"src/FastNoiseSIMD/FastNoiseSIMD_neon.cpp"
+	#"src/FastNoiseSIMD/FastNoiseSIMD_sse2.cpp"
+	#"src/FastNoiseSIMD/FastNoiseSIMD_sse41.cpp"
 )
 
 target_link_libraries(Brickmap PRIVATE
@@ -78,10 +92,10 @@ target_include_directories(Brickmap PRIVATE
 )
 set_target_properties(Brickmap PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
-set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --expt-relaxed-constexpr")
+set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --expt-relaxed-constexpr ${CUDA_ARCHS}")
 
-target_compile_options(Brickmap PRIVATE                        
-	$<$<COMPILE_LANGUAGE:CXX>:/arch:AVX2>
-)
+#target_compile_options(Brickmap PRIVATE                        
+#	$<$<COMPILE_LANGUAGE:CXX>:/arch:AVX2>
+#)
 
 target_compile_features(Brickmap PUBLIC cxx_std_17)
